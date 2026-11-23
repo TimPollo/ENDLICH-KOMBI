@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b101a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Verrückte Kombi">
+  <meta name="description" content="Deine Kombinationen: importieren, sicher lokal speichern, kopieren und entnehmen.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="stylesheet" href="./style.css">
+  <title>Verrückte Kombination</title>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true"><span class="brand-cross">✳</span></div>
+      <div class="brand-copy"><div class="eyebrow">DEIN PRIVATER STAPEL</div><h1>Verrückte<br>Kombination</h1></div>
+      <div class="topbar-dot" aria-label="Lokal gespeichert" title="Lokal gespeichert"><span></span>LOKAL</div>
+    </header>
+
+    <main>
+      <section id="view-stack" class="view active" aria-label="Stapel">
+        <div class="section-header"><span class="section-kicker">01 / STAPEL</span><span class="tiny-status"><span class="status-light"></span> Auf diesem Gerät</span></div>
+
+        <section class="hero-card" aria-labelledby="next-title">
+          <div class="hero-top"><span id="next-title">NÄCHSTE KOMBINATION</span><span class="mini-chip">FIFO</span></div>
+          <div id="next-code" class="next-code empty" aria-live="polite">Noch keine Kombination</div>
+          <p id="next-hint" class="hero-subtitle">Importiere eine TXT-Datei, um zu starten.</p>
+          <button id="copy-btn" class="primary-btn" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            <span id="copy-label">Kopieren &amp; entnehmen</span>
+          </button>
+        </section>
+
+        <section class="queue-section" aria-labelledby="queue-heading">
+          <div class="queue-heading-row">
+            <div><div class="section-kicker">DEINE ÜBERSICHT</div><h2 id="queue-heading">Warteschlange</h2></div>
+            <div class="counter" aria-live="polite"><strong id="remaining-count">0</strong><span>übrig</span></div>
+          </div>
+          <div class="queue-panel">
+            <ol id="queue-list" class="queue-list" aria-label="Nummerierte Kombinationen"></ol>
+            <div id="queue-empty" class="queue-empty"><span class="empty-symbol" aria-hidden="true">⌁</span><strong>Dein Stapel ist leer.</strong><span>Neue Kombinationen findest du im Import-Reiter.</span></div>
+            <button id="show-more-btn" class="secondary-btn more-btn" hidden type="button">Weitere anzeigen</button>
+          </div>
+          <button id="delete-btn" type="button" class="delete-btn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7m4-7v7"/></svg> Alle löschen</button>
+        </section>
+      </section>
+
+      <section id="view-import" class="view" aria-label="Import" hidden>
+        <div class="section-header"><span class="section-kicker">02 / IMPORT</span><span class="tiny-status">TXT / EINE ZEILE PRO CODE</span></div>
+        <div class="import-title"><h2>Neues für<br>deinen Stapel.</h2><p>Wähle eine TXT-Datei aus der Dateien-App. Jede nichtleere Zeile wird als eigene Kombination eingelesen.</p></div>
+        <div class="import-card">
+          <div class="file-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7M8 14h8M8 18h6"/></svg></div>
+          <h3>TXT-Datei auswählen</h3>
+          <p>Eine Kombination pro Zeile.<br>Neue Einträge landen ganz hinten.</p>
+          <label class="primary-btn file-label" for="file-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5M4 16v4h16v-4"/></svg> Datei aus „Dateien“ wählen</label>
+          <input id="file-input" class="visually-hidden" type="file" accept=".txt,text/plain" aria-label="TXT-Datei aus Dateien auswählen">
+        </div>
+        <div id="import-result" class="import-result" role="status" aria-live="polite" hidden></div>
+        <div class="info-card"><div class="info-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v6m0-9v.1"/></svg><strong>Duplikate? Erledigt.</strong></div><p>Bereits bekannte Kombinationen werden automatisch übersprungen – auch nach dem Kopieren oder Löschen aus dem Stapel. Diese Information bleibt lokal gespeichert.</p></div>
+        <p class="privacy-note">Keine Anmeldung. Kein Server für deine Einträge. Die Daten liegen im App-Speicher dieses iPhones. Beim Löschen der Website-/App-Daten können sie verloren gehen.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Hauptnavigation">
+      <button id="tab-stack" class="nav-tab selected" type="button" aria-controls="view-stack" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="5" rx="1.5"/><rect x="4" y="11" width="16" height="5" rx="1.5"/><path d="M8 20h8"/></svg><span>Stapel</span></button>
+      <button id="tab-import" class="nav-tab" type="button" aria-controls="view-import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5M4 16v4h16v-4"/></svg><span>Import</span></button>
+    </nav>
+  </div>
+
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-heading">
+    <form method="dialog"><div class="confirm-icon" aria-hidden="true">!</div><h2 id="confirm-heading">Stapel wirklich leeren?</h2><p>Alle noch übrigen Kombinationen werden entnommen. Sie gelten weiterhin als bekannt und können nicht erneut importiert werden.</p><div class="dialog-actions"><button id="cancel-delete" type="submit" value="cancel" class="secondary-btn">Abbrechen</button><button id="confirm-delete" type="submit" value="delete" class="danger-btn">Alle löschen</button></div></form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="no-js">Für diese App muss JavaScript eingeschaltet sein.</p></noscript>
+</body>
+</html>
